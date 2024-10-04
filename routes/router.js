@@ -413,6 +413,15 @@ route.delete("/order/:id", async (req, res) => {
     res.send({ success: false, message: "Order cannot be Deleted" });
   }
 });
+//endpoint for deleting all orders
+route.delete("/delete_all", async (req, res) => {
+  try {
+    const deleteOrder = await Order.deleteMany();
+    res.send({ success: true, message: "Orders deleted successfully" });
+  } catch (error) {
+    console.log(error.message);
+  }
+});
 //endpoint for getting single order
 route.get("/order/:id", async (req, res) => {
   const { id } = req.params;
