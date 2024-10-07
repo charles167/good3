@@ -343,7 +343,7 @@ route.post("/PostOrder", upload.single("image"), async (req, res) => {
     } = req.body;
 
     // Handle the uploaded image
-    const image = req.file ? req.file.filename : undefined;
+    const image = req.file.path || ""; // Ensure the file path is extracted properly
 
     // Parse cartItems if it's sent as a JSON string
     let parsedCartItems = [];
