@@ -5,59 +5,55 @@ const Review = require("../model/Review");
 const DeliveryPriceModel = require("../model/DeliveryPriceModel");
 const Order = require("../model/Order");
 const Notes = require("../model/Notes");
-const multer = require("multer");
-const path = require("path");
-const { log } = require("console");
-
+const upload = require("../upload"); // Correctly import upload config
 //applying multer
-const storage = multer.diskStorage({
-  destination: (req, file, cb) => {
-    cb(null, "./uploads");
-  },
-  filename: (req, file, cb) => {
-    cb(null, Date.now() + path.extname(file.originalname));
-  },
-});
-const upload = multer({
-  storage: storage,
-});
 //creating product
 route.post("/products", upload.single("image"), async (req, res) => {
-  let Id;
-  let product = await ProductModel.find({});
-  if (product.length > 0) {
-    let Last_Product_Array = product.slice(-1);
-    let Last_Product = Last_Product_Array[0];
-    Id = Last_Product.id + 1;
-  } else {
-    Id = 1;
-  }
+  try {
+    // Generate new product ID
+    let product = await ProductModel.find({});
+    let Id = product.length > 0 ? product[product.length - 1].id + 1 : 1;
 
-  const { id, Pname, vendor, availability, price, description, category } =
-    req.body;
-  const image = req.file ? req.file.filename : "";
+    const { Pname, vendor, availability, price, description, category } =
+      req.body;
 
-  const createProduct = await ProductModel.create({
-    id: Id,
-    Pname,
-    vendor,
-    availability,
-    price,
-    description,
-    category,
-    image,
-  });
-  if (createProduct) {
-    global.io.emit("productAdded", createProduct);
-    res.send({
-      success: true,
-      msg: "Product created successfully",
-      createProduct,
+    // Get the URL of the uploaded image from Cloudinary response
+    const image = req.file.path || ""; // Ensure the file path is extracted properly
+
+    // Create a new product
+    const createProduct = await ProductModel.create({
+      id: Id,
+      Pname,
+      vendor,
+      availability,
+      price,
+      description,
+      category,
+      image, // Store the image URL from Cloudinary
     });
-  } else {
-    res.send({
+
+    if (createProduct) {
+      // Emit event when a new product is added (optional, depending on your use case)
+      global.io.emit("productAdded", createProduct);
+
+      // Send success response
+      res.status(201).send({
+        success: true,
+        msg: "Product created successfully",
+        createProduct,
+      });
+    } else {
+      res.status(500).send({
+        success: false,
+        msg: "Product cannot be created",
+      });
+    }
+  } catch (error) {
+    console.error("Error creating product:", error);
+    res.status(500).send({
       success: false,
-      msg: "Product cannot be created",
+      msg: "Internal server error",
+      error,
     });
   }
 });
@@ -101,7 +97,15 @@ route.delete("/delete/:id", async (req, res) => {
     });
   }
 });
-
+//deleting all products
+route.delete("/products/delete", async (req, res) => {
+  try {
+    const deleteProduct = await ProductModel.deleteMany();
+    res.send({ success: true, message: "products deleted successfully" });
+  } catch (error) {
+    console.log(error.message);
+  }
+});
 //getting single product
 route.get("/products/:id", async function (req, res) {
   const { id } = req.params;
