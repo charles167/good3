@@ -338,6 +338,7 @@ route.post("/PostOrder", upload.single("image"), async (req, res) => {
       Address,
       PackPrice,
       orderId,
+      WhatsApp,
       cartItems, // Assuming this is passed as a JSON string
       Vendor,
     } = req.body;
