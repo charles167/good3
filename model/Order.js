@@ -11,6 +11,9 @@ const OrderSchema = new mongoose.Schema({
   phoneNumber: {
     type: String,
   },
+  WhatsApp: {
+    type: String,
+  },
   gender: {
     type: String,
   },
