@@ -5,10 +5,10 @@ const Review = require("../model/Review");
 const DeliveryPriceModel = require("../model/DeliveryPriceModel");
 const Order = require("../model/Order");
 const Notes = require("../model/Notes");
-const upload = require("../upload"); // Correctly import upload config
+const { upload1, upload2 } = require("../upload"); // Correctly import upload config
 //applying multer
 //creating product
-route.post("/products", upload.single("image"), async (req, res) => {
+route.post("/products", upload1.single("image"), async (req, res) => {
   try {
     // Generate new product ID
     let product = await ProductModel.find({});
@@ -117,7 +117,7 @@ route.get("/products/:id", async function (req, res) {
   }
 });
 //editing
-route.put("/products/:id", upload.single("image"), async function (req, res) {
+route.put("/products/:id", upload1.single("image"), async function (req, res) {
   const { id } = req.params;
   const { Pname, vendor, availability, price, description, category } =
     req.body;
@@ -326,7 +326,7 @@ route.delete("/note/:id", async (req, res) => {
 });
 
 //endpoint for posting order
-route.post("/PostOrder", upload.single("image"), async (req, res) => {
+route.post("/PostOrder", upload2.single("image"), async (req, res) => {
   try {
     // Destructure the body to extract required fields
     const {
@@ -339,6 +339,7 @@ route.post("/PostOrder", upload.single("image"), async (req, res) => {
       PackPrice,
       orderId,
       WhatsApp,
+      Note,
       cartItems, // Assuming this is passed as a JSON string
       Vendor,
     } = req.body;
@@ -370,6 +371,7 @@ route.post("/PostOrder", upload.single("image"), async (req, res) => {
       PackPrice,
       orderId,
       image,
+      Note,
       cartItems: parsedCartItems, // Store parsed cart items
       Vendor,
     });

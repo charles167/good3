@@ -11,7 +11,7 @@ cloudinary.config({
 });
 
 // Set up Multer Storage to upload directly to Cloudinary
-const storage = new CloudinaryStorage({
+const storage1 = new CloudinaryStorage({
   cloudinary: cloudinary,
   params: {
     folder: "uploads", // All uploaded files will be stored in this folder
@@ -19,5 +19,13 @@ const storage = new CloudinaryStorage({
     public_id: (req, file) => file.originalname.split(".")[0], // Use the original file name without extension
   },
 });
+const storage2 = new CloudinaryStorage({
+  cloudinary: cloudinary,
+  params: {
+    folder: "receipt", // All uploaded files will be stored in this folder
+    format: async (req, file) => "png", // You can change this to 'jpeg', 'jpg', etc.
+    public_id: (req, file) => file.originalname.split(".")[0], // Use the original file name without extension
+  },
+});
 
-module.exports = { cloudinary, storage };
+module.exports = { cloudinary, storage1, storage2 };

@@ -40,6 +40,9 @@ const OrderSchema = new mongoose.Schema({
   Vendor: {
     type: String,
   },
+  Note: {
+    type: String,
+  },
   Date: {
     type: Date, // Corrected from "Date" to Date type
     default: Date.now,
