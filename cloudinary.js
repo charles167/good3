@@ -4,10 +4,10 @@ const { CloudinaryStorage } = require("multer-storage-cloudinary");
 
 // Configure Cloudinary using environment variables (or hardcoded if necessary)
 cloudinary.config({
-  cloud_name: process.env.CLOUDINARY_CLOUD_NAME || "dckl8oezb", // Your Cloudinary Cloud Name
-  api_key: process.env.CLOUDINARY_API_KEY || "611714664855675", // Your Cloudinary API Key
+  cloud_name: process.env.CLOUDINARY_CLOUD_NAME || "dvt6ydqgt", // Your Cloudinary Cloud Name
+  api_key: process.env.CLOUDINARY_API_KEY || "293241237865216", // Your Cloudinary API Key
   api_secret:
-    process.env.CLOUDINARY_API_SECRET || "ymJlz-0BFjjMXp47E2j-gnDryaI", // Your Cloudinary API Secret
+    process.env.CLOUDINARY_API_SECRET || "d5XeqCmfJ7f6mbcJldNk4REBfTs", // Your Cloudinary API Secret
 });
 
 // Set up Multer Storage to upload directly to Cloudinary
