@@ -6,6 +6,7 @@ const DeliveryPriceModel = require("../model/DeliveryPriceModel");
 const Order = require("../model/Order");
 const Notes = require("../model/Notes");
 const { upload1, upload2 } = require("../upload"); // Correctly import upload config
+const { cloudinary } = require("../cloudinary");
 //applying multer
 //creating product
 route.post("/products", upload1.single("image"), async (req, res) => {
@@ -122,10 +123,17 @@ route.put("/products/:id", upload1.single("image"), async function (req, res) {
   const { Pname, vendor, availability, price, description, category } =
     req.body;
 
-  // Conditionally set the image
-  const image = req.file ? req.file.filename : undefined; // undefined if no new image
-
   try {
+    let imageUrl;
+
+    // Check if a new image is uploaded
+    if (req.file) {
+      const result = await cloudinary.uploader.upload(req.file.path, {
+        folder: "uploads", // Optional: Specify a folder in Cloudinary
+      });
+      imageUrl = result.secure_url; // Extract the secure URL from the response
+    }
+
     // Prepare the update fields
     const updateFields = {
       Pname,
@@ -136,19 +144,19 @@ route.put("/products/:id", upload1.single("image"), async function (req, res) {
       category,
     };
 
-    // Only update the image if a new file is uploaded
-    if (image) {
-      updateFields.image = image; // Only set image if a new one is provided
+    // Add the image URL if it exists
+    if (imageUrl) {
+      updateFields.image = imageUrl;
     }
 
+    // Update the product in the database
     const response = await ProductModel.findByIdAndUpdate(id, updateFields, {
       new: true,
-      runValidators: true, // Ensures validators are run on the update
+      runValidators: true,
     });
 
     if (response) {
-      // Emit the updated product details or id
-      global.io.emit("ProductUpdated", response); // Emitting the whole response could be useful
+      global.io.emit("ProductUpdated", response);
       return res.status(200).json({
         success: true,
         response: response,
@@ -161,7 +169,7 @@ route.put("/products/:id", upload1.single("image"), async function (req, res) {
       });
     }
   } catch (error) {
-    console.error("Error updating product:", error); // Log the error for debugging
+    console.error("Error updating product:", error);
     return res.status(500).json({
       success: false,
       msg: "Server error",
