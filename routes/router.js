@@ -334,7 +334,7 @@ route.delete("/note/:id", async (req, res) => {
 });
 
 //endpoint for posting order
-route.post("/PostOrder", upload2.single("image"), async (req, res) => {
+route.post("/PostOrder", async (req, res) => {
   try {
     // Destructure the body to extract required fields
     const {
@@ -348,12 +348,10 @@ route.post("/PostOrder", upload2.single("image"), async (req, res) => {
       orderId,
       WhatsApp,
       Note,
+      email,
       cartItems, // Assuming this is passed as a JSON string
       Vendor,
     } = req.body;
-
-    // Handle the uploaded image
-    const image = req.file.path || ""; // Ensure the file path is extracted properly
 
     // Parse cartItems if it's sent as a JSON string
     let parsedCartItems = [];
@@ -378,8 +376,8 @@ route.post("/PostOrder", upload2.single("image"), async (req, res) => {
       WhatsApp,
       PackPrice,
       orderId,
-      image,
       Note,
+      email,
       cartItems: parsedCartItems, // Store parsed cart items
       Vendor,
     });

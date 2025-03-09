@@ -29,9 +29,10 @@ const OrderSchema = new mongoose.Schema({
   orderId: {
     type: String,
   },
-  image: {
+  email: {
     type: String,
   },
+
   cartItems: [
     {
       type: Object, // Or a more specific schema for cart items if needed
